@@ -1,5 +1,6 @@
 package pieces;
 
+import game.Board;
 import util.Color;
 import util.Pos;
 
@@ -11,8 +12,8 @@ public class Bishop extends Piece{
 	}
 
 	@Override
-	public boolean validMove(Pos from, Pos to) {
-		// TODO Auto-generated method stub
+	public boolean validMove(Pos from, Pos to, Board board) {
+
 		return false;
 	}
 

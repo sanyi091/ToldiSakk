@@ -70,15 +70,15 @@ public class Fen {
 			case 'K':
 				wKingside = true;
 				break;
-				
+
 			case 'Q':
 				wQueenside = true;
 				break;
-				
+
 			case 'k':
 				bKingside = true;
 				break;
-				
+
 			default:
 				bQueenside = true;
 				break;
@@ -97,6 +97,10 @@ public class Fen {
 
 	public Tile[][] getTiles() {
 		return tiles;
+	}
+
+	public Tile getTile(Pos pos){
+		return tiles[pos.Y()][pos.X()];
 	}
 
 	public void setTiles(Tile[][] tiles) {

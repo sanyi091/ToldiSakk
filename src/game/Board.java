@@ -7,11 +7,25 @@ import util.Pos;
 public class Board {
 	private Fen fen;
 	private GameState state;
-	private Color player;
 	
 	public Board() {
 		fen = new Fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1");
 		state = GameState.Playing;
-		player = fen.getPlayer();
+	}
+
+	public boolean executeMove(Pos from, Pos to){
+		if(from == to)
+			return false;
+		if(from.X() > 7 || from.X() < 0 || to.X() > 7 || to.Y() < 0)
+			return false;
+		if(fen.getTile(from).getPiece().validMove(from, to, this)){
+			//execute
+			return true;
+		}
+		return true;
+	}
+
+	public Color getPlayer(){
+		return fen.getPlayer();
 	}
 }
