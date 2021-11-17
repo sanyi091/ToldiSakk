@@ -2,6 +2,6 @@ package game;
 
 public class Game {
 	public static void main(String[] args) {
-		//do something
+		Board b = new Board();
 	}
 }

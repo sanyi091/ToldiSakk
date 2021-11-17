@@ -1,19 +1,17 @@
 package game;
 
+import util.GameState;
+import util.Color;
+import util.Pos;
+
 public class Board {
-	private Tile[][] tiles;
 	private Fen fen;
+	private GameState state;
+	private Color player;
 	
 	public Board() {
-		for(int y = 0; y <= 7; y++) {
-			for(int x = 0; y <= 7 ; x++) {
-				tiles[x][y] = new Tile(x, y);
-			}
-		}
 		fen = new Fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1");
-	}
-	
-	public void setBoard(Fen fen) {
-		tiles = fen.getTiles();
+		state = GameState.Playing;
+		player = fen.getPlayer();
 	}
 }

@@ -24,13 +24,17 @@ public class Tile {
 	public Piece getPiece() {
 		return piece;
 	}
+
 	public void setPiece(Piece piece) {
 		this.piece = piece;
 	}
+
 	public Pos getPos() {
 		return pos;
 	}
+
 	public void setPos(Pos pos) {
 		this.pos = pos;
 	}
+
 }

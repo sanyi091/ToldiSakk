@@ -4,59 +4,61 @@ import util.Pos;
 import pieces.*;
 
 public class Fen {
-	private Tile[][] tiles;
+	private Tile tiles[][] = new Tile[8][8];
 	private Color player;
 	private boolean wKingside = false, wQueenside = false, bKingside = false, bQueenside = false;
 	private Pos enpassan;
 	private int turn;
-	
+
 	public Fen(String fen) {
-		if(fen.isBlank())
-			fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1";
+		if(fen.isBlank() || fen.isEmpty() || fen == null)
+			fen = new String("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1");
 		String[] input = fen.split(" ");
 		int iter = 0;
 		while(iter <= input[0].length() - 1) {
-			for(int sor = 7; sor >=0; sor--) {
-				for(int oszlop = 0; oszlop <= 7 ; oszlop++) {
-					switch(input[0].toLowerCase().charAt(iter)){
+			for(int row = 7; row >=0; row--) {
+				for(int column = 0; column <= 7 ; column++, iter++) {
+					switch(Character.toLowerCase(input[0].charAt(iter))){
 					case 'p':
-						tiles[sor][oszlop] = new Tile(new Pawn(input[0].charAt(iter)=='P'? Color.white:Color.black),
-													  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new Pawn(input[0].charAt(iter)=='P'? Color.white:Color.black),
+													  new Pos(column, row));
 						break;
 						
 					case 'k':
-						tiles[sor][oszlop] = new Tile(new King(input[0].charAt(iter)=='K'? Color.white:Color.black),
-													  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new King(input[0].charAt(iter)=='K'? Color.white:Color.black),
+													  new Pos(column, row));
 						break;
 						
 					case 'q':
-						tiles[sor][oszlop] = new Tile(new Queen(input[0].charAt(iter)=='Q'? Color.white:Color.black),
-													  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new Queen(input[0].charAt(iter)=='Q'? Color.white:Color.black),
+													  new Pos(column, row));
 						break;
 						
 					case 'b':
-						tiles[sor][oszlop] = new Tile(new Bishop(input[0].charAt(iter)=='B'? Color.white:Color.black),
-													  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new Bishop(input[0].charAt(iter)=='B'? Color.white:Color.black),
+													  new Pos(column, row));
 						break;
 						
 					case 'n':
-						tiles[sor][oszlop] = new Tile(new Knight(input[0].charAt(iter)=='N'? Color.white:Color.black),
-								  					  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new Knight(input[0].charAt(iter)=='N'? Color.white:Color.black),
+								  					  new Pos(column, row));
 						break;
 						
 					case 'r':
-						tiles[sor][oszlop] = new Tile(new Rook(input[0].charAt(iter)=='R'? Color.white:Color.black),
-													  new Pos(oszlop, sor));
+						tiles[row][column] = new Tile(new Rook(input[0].charAt(iter)=='R'? Color.white:Color.black),
+													  new Pos(column, row));
 						break;
 						
 					case '/':
+						column = -1;
 						break;
 						
 					default:
-						tiles[sor][oszlop] = new Tile(oszlop, sor);
+						for(int i = 0; i <= Character.getNumericValue(input[0].charAt(iter)) - 1; i++, column++) {
+							tiles[row][column] = new Tile(column, row);
+						}																					//for loop eggyel többet ad hozzá a végén
 						break;
 					}
-					iter++;
 				}
 			}
 		}
@@ -90,7 +92,7 @@ public class Fen {
 			enpassan = new Pos((int) input[3].charAt(0) - 41, input[3].charAt(1));
 		}
 		
-		turn = input[4].charAt(0);
+		turn = Character.getNumericValue(input[4].charAt(0));
 	}
 
 	public Tile[][] getTiles() {
