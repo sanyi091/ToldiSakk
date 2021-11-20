@@ -94,6 +94,28 @@ public class Fen {
 		
 		turn = Character.getNumericValue(input[4].charAt(0));
 	}
+	
+	public String toString() {
+		String str = new String();
+		for(int row = 7; row >= 0; row--) {
+			int sorfiller = 0;
+			for(int column = 0; column <= 7; column++) {
+				if(tiles[row][column].getPiece()==null) {
+					sorfiller++;
+				}
+				else {
+					str += sorfiller;
+					sorfiller = 0;
+				}
+			}
+		}
+		
+		return str;
+	}
+	
+	public Piece getPiece(Pos pos) {
+		return tiles[pos.Y()][pos.X()].getPiece();
+	}
 
 	public Tile[][] getTiles() {
 		return tiles;

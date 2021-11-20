@@ -18,7 +18,7 @@ public class Board {
 			return false;
 		if(from.X() > 7 || from.X() < 0 || to.X() > 7 || to.Y() < 0)
 			return false;
-		if(fen.getTile(from).getPiece().validMove(from, to, this)){
+		if(fen.getTile(from).getPiece().validMove(from, to, fen)){
 			//execute
 			return true;
 		}
