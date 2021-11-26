@@ -1,7 +1,7 @@
 package game;
 
 import util.GameState;
-import util.Color;
+import util.Team;
 import util.Pos;
 
 public class Board {
@@ -25,7 +25,11 @@ public class Board {
 		return true;
 	}
 
-	public Color getPlayer(){
+	public Team getPlayer(){
 		return fen.getPlayer();
+	}
+
+	public Fen getFen(){
+		return fen;
 	}
 }

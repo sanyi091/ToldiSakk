@@ -1,29 +1,29 @@
 package pieces;
 
 import game.Fen;
-import util.Color;
+import util.Team;
 import util.Pos;
-import util.Type;
+import util.PieceType;
 
 public abstract class Piece {
-	protected Color color;
-	protected Type type;
+	protected Team color;
+	protected PieceType type;
 	
 	public Piece() {
 		this.color = null;
 		this.type = null;
 	}
 	
-	public Piece(Color color) {
+	public Piece(Team color) {
 		this.color = color;
 		this.type = null;
 	}
 	
-	public Color getColor() {
+	public Team getColor() {
 		return color;
 	}
 	
-	public Type getType() {
+	public PieceType getType() {
 		return type;
 	}
 	

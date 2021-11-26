@@ -1,11 +1,13 @@
 package game;
-import util.Color;
+import util.Team;
 import util.Pos;
 import pieces.*;
 
+import java.util.HashMap;
+
 public class Fen {
 	private Tile tiles[][] = new Tile[8][8];
-	private Color player;
+	private Team player;
 	private boolean wKingside = false, wQueenside = false, bKingside = false, bQueenside = false;
 	private Pos enpassan;
 	private int turn;
@@ -20,32 +22,32 @@ public class Fen {
 				for(int column = 0; column <= 7 ; column++, iter++) {
 					switch(Character.toLowerCase(input[0].charAt(iter))){
 					case 'p':
-						tiles[row][column] = new Tile(new Pawn(input[0].charAt(iter)=='P'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new Pawn(input[0].charAt(iter)=='P'? Team.white: Team.black),
 													  new Pos(column, row));
 						break;
 						
 					case 'k':
-						tiles[row][column] = new Tile(new King(input[0].charAt(iter)=='K'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new King(input[0].charAt(iter)=='K'? Team.white: Team.black),
 													  new Pos(column, row));
 						break;
 						
 					case 'q':
-						tiles[row][column] = new Tile(new Queen(input[0].charAt(iter)=='Q'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new Queen(input[0].charAt(iter)=='Q'? Team.white: Team.black),
 													  new Pos(column, row));
 						break;
 						
 					case 'b':
-						tiles[row][column] = new Tile(new Bishop(input[0].charAt(iter)=='B'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new Bishop(input[0].charAt(iter)=='B'? Team.white: Team.black),
 													  new Pos(column, row));
 						break;
 						
 					case 'n':
-						tiles[row][column] = new Tile(new Knight(input[0].charAt(iter)=='N'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new Knight(input[0].charAt(iter)=='N'? Team.white: Team.black),
 								  					  new Pos(column, row));
 						break;
 						
 					case 'r':
-						tiles[row][column] = new Tile(new Rook(input[0].charAt(iter)=='R'? Color.white:Color.black),
+						tiles[row][column] = new Tile(new Rook(input[0].charAt(iter)=='R'? Team.white: Team.black),
 													  new Pos(column, row));
 						break;
 						
@@ -63,7 +65,7 @@ public class Fen {
 			}
 		}
 		
-		player = input[1].charAt(0)=='w'? Color.white:Color.black;
+		player = input[1].charAt(0)=='w'? Team.white: Team.black;
 		
 		for(int i = 0; i <= input[2].length() - 1; i++) {
 			switch(input[2].charAt(i)) {
@@ -96,21 +98,22 @@ public class Fen {
 	}
 	
 	public String toString() {
-		String str = new String();
+
+		StringBuilder str = new StringBuilder();
 		for(int row = 7; row >= 0; row--) {
 			int sorfiller = 0;
 			for(int column = 0; column <= 7; column++) {
-				if(tiles[row][column].getPiece()==null) {
+				if(tiles[row][column].getPiece() == null) {
 					sorfiller++;
 				}
 				else {
-					str += sorfiller;
+					str.append(sorfiller);
 					sorfiller = 0;
 				}
 			}
 		}
 		
-		return str;
+		return str.toString();
 	}
 	
 	public Piece getPiece(Pos pos) {
@@ -129,11 +132,11 @@ public class Fen {
 		this.tiles = tiles;
 	}
 
-	public Color getPlayer() {
+	public Team getPlayer() {
 		return player;
 	}
 
-	public void setPlayer(Color player) {
+	public void setPlayer(Team player) {
 		this.player = player;
 	}
 

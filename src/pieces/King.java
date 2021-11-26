@@ -1,21 +1,20 @@
 package pieces;
 
 import game.Fen;
-import util.Color;
+import util.Team;
 import util.Pos;
-import util.Type;
+import util.PieceType;
 
 public class King extends Piece{
 
-	public King(Color color) {
+	public King(Team color) {
 		this.color = color;
-		this.type = Type.king;
+		this.type = PieceType.king;
 	}
 
 	@Override
 	public boolean validMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
+		return Math.abs(from.X()-to.X()) <= 1 && Math.abs(from.Y()-to.Y()) <= 1;
 	}
 
 	@Override

@@ -1,21 +1,39 @@
 package pieces;
 
 import game.Fen;
-import util.Color;
+import util.Team;
 import util.Pos;
-import util.Type;
+import util.PieceType;
+
+import java.util.ArrayList;
 
 public class Knight extends Piece{
 
-	public Knight(Color color) {
+	public Knight(Team color) {
 		this.color = color;
-		this.type = Type.knight;
+		this.type = PieceType.knight;
 	}
 
 	@Override
 	public boolean validMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
+		ArrayList<Pos> moves = new ArrayList<>();
+
+		int x = to.X();
+		int y = to.Y();
+
+		moves.add(new Pos(x - 1, y + 2));
+		moves.add(new Pos(x + 1, y + 2));
+
+		moves.add(new Pos(x - 2, y + 1));
+		moves.add(new Pos(x + 2, y + 1));
+
+		moves.add(new Pos(x - 2, y - 1));
+		moves.add(new Pos(x + 2, y - 1));
+
+		moves.add(new Pos(x - 1, y - 2));
+		moves.add(new Pos(x + 1, y - 2));
+
+		return moves.contains(to);
 	}
 
 	@Override

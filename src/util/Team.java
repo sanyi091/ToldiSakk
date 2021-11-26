@@ -1,5 +1,5 @@
 package util;
 
-public enum Color {
-	white, black
+public enum Team {
+	white, black;
 }

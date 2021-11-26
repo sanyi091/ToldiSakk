@@ -1,21 +1,20 @@
 package pieces;
 
 import game.Fen;
-import util.Color;
+import util.Team;
 import util.Pos;
-import util.Type;
+import util.PieceType;
 
 public class Queen extends Piece{
 
-	public Queen(Color color) {
+	public Queen(Team color) {
 		this.color = color;
-		this.type = Type.queen;
+		this.type = PieceType.queen;
 	}
 
 	@Override
 	public boolean validMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
+		return new Rook(color).validMove(from, to, fen) || new Bishop(color).validMove(from, to, fen);
 	}
 
 	@Override
