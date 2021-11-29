@@ -28,7 +28,5 @@ public abstract class Piece {
 	}
 	
 	public abstract boolean validMove(Pos from, Pos to, Fen fen);
-	
-	public abstract boolean specialMove(Pos from, Pos to, Fen fen);
 
 }

@@ -15,25 +15,22 @@ public class Pawn extends Piece {
 	@Override
 	public boolean validMove(Pos from, Pos to, Fen fen) {
 		// en passan
-		if(to == fen.getEnpassan() && to.Y() - from.Y() == (color == Team.white ? 1:-1)) {
-			fen.setEnpassan(new Pos());
+		if(new Pos(from.X(), from.Y() + (color == Team.white ? 2 : -2)).equals(fen.getEnpassan()) && to.Y() - from.Y() == (color == Team.white ? 1:-1) && Math.abs(from.X()-to.X()) == 1) {
 			return true;
 		}
 
+		// take
+		else if(Math.abs(from.X()-to.X()) == 1 && to.Y() - from.Y() == (color == Team.white ? 1:-1) && fen.getPiece(to) != null)
+			return true;
+
 		// forward 1
-		else if(from.X() == to.X() && to.X() - from.Y() == (color == Team.white ? 1:-1))
+		else if(from.X() == to.X() && to.Y() - from.Y() == (color == Team.white ? 1:-1) && fen.getPiece(to) == null)
 			return true;
 
 		// forward 2
-		else if(from.X() == to.X() && from.Y() == (color == Team.white? 1:6) && fen.getPiece(new Pos(from.X(), from.Y() + (color == Team.white ? 1:-1))) == null)
+		else if(from.X() == to.X() && from.Y() == (color == Team.white? 1:6) && fen.getPiece(new Pos(from.X(), from.Y() + (color == Team.white ? 1:-1))) == null && fen.getPiece(to) == null)
 			return true;
 
-		return false;
-	}
-
-	@Override
-	public boolean specialMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

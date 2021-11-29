@@ -17,12 +17,6 @@ public class Queen extends Piece{
 		return new Rook(color).validMove(from, to, fen) || new Bishop(color).validMove(from, to, fen);
 	}
 
-	@Override
-	public boolean specialMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 
 
 }

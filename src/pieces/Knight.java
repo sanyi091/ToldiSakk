@@ -35,11 +35,4 @@ public class Knight extends Piece{
 
 		return moves.contains(to);
 	}
-
-	@Override
-	public boolean specialMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

@@ -28,10 +28,4 @@ public class Bishop extends Piece{
 		return false;
 	}
 
-	@Override
-	public boolean specialMove(Pos from, Pos to, Fen fen) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }
