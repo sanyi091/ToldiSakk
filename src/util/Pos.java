@@ -1,8 +1,8 @@
 package util;
 
 public class Pos{
-	int x;
-	int y;
+	private int x;
+	private int y;
 	
 	public Pos() {
 		x = -1;
@@ -21,13 +21,19 @@ public class Pos{
 	public int Y() {
 		return y;
 	}
-		
-	public void setX(int x) {
-		this.x = x;
+
+	@Override
+	public boolean equals(Object o){
+		if(this == o)
+			return true;
+		if(!(o instanceof Pos))
+			return false;
+		Pos pos = (Pos) o;
+		return this.x == pos.x && this.y == pos.y;
 	}
-		
-	public void setY(int y) {
-		this.y =  y;
+
+	@Override
+	public int hashCode(){
+		return x ^ y;
 	}
-		
 }

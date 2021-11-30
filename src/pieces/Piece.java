@@ -14,11 +14,6 @@ public abstract class Piece {
 		this.type = null;
 	}
 	
-	public Piece(Team color) {
-		this.color = color;
-		this.type = null;
-	}
-	
 	public Team getColor() {
 		return color;
 	}

@@ -1,6 +1,7 @@
 package game;
 import util.Team;
 import util.Pos;
+import util.PieceType;
 import pieces.*;
 
 import java.util.HashMap;
@@ -14,7 +15,7 @@ public class Fen {
 
 	public Fen(String fen) {
 		if (fen.isBlank() || fen.isEmpty())
-			fen = new String("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1");
+			fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1";
 		String[] input = fen.split(" ");
 		int iter = 0;
 		while (iter <= input[0].length() - 1) {
@@ -88,7 +89,7 @@ public class Fen {
 		}
 
 		if (input[3].charAt(0) == '-') {
-			enpassan = new Pos(0, 0);
+			enpassan = new Pos();
 		} else {
 			enpassan = new Pos((int) input[3].charAt(0) - 41, input[3].charAt(1));
 		}
@@ -105,11 +106,52 @@ public class Fen {
 				if (tiles[row][column].getPiece() == null) {
 					sorfiller++;
 				} else {
-					str.append(sorfiller);
-					sorfiller = 0;
+					if(sorfiller != 0) {
+						str.append(sorfiller);
+						sorfiller = 0;
+					}
+					switch (tiles[row][column].getPiece().getType()) {
+						case pawn -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'P' : 'p');
+						case rook -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'R' : 'r');
+						case knight -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'N' : 'n');
+						case bishop -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'B' : 'b');
+						case queen -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'Q' : 'q');
+						case king -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'K' : 'k');
+					}
+				}
+				if(column == 7 && row != 0) {
+					if(sorfiller != 0) {
+						str.append(sorfiller);
+						sorfiller = 0;
+					}
+					str.append('/');
 				}
 			}
 		}
+
+		str.append(" ");
+		str.append(player == Team.white? 'w':'b');
+
+		str.append(" ");
+		if(castling[0])
+			str.append('K');
+		if(castling[1])
+			str.append('Q');
+		if(castling[2])
+			str.append('k');
+		if(castling[3])
+			str.append('q');
+
+		str.append(" ");
+		if(enpassan.X() != -1) {
+			str.append((char) (enpassan.X() + 41));
+			str.append(enpassan.Y());
+		}
+		else
+			str.append("-");
+
+		str.append(" ");
+		str.append(turn);
 
 		return str.toString();
 	}
@@ -130,12 +172,12 @@ public class Fen {
 		tiles[tile.getPos().Y()][tile.getPos().X()] = tile;
 	}
 
-	public void setTiles(Tile[][] tiles) {
-		this.tiles = tiles;
-	}
-
 	public Team getPlayer() {
 		return player;
+	}
+
+	public void addTurn(){
+		turn++;
 	}
 
 	public void setPlayer(Team player) {

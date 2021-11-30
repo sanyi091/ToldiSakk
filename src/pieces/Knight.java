@@ -18,8 +18,8 @@ public class Knight extends Piece{
 	public boolean validMove(Pos from, Pos to, Fen fen) {
 		ArrayList<Pos> moves = new ArrayList<>();
 
-		int x = to.X();
-		int y = to.Y();
+		int x = from.X();
+		int y = from.Y();
 
 		moves.add(new Pos(x - 1, y + 2));
 		moves.add(new Pos(x + 1, y + 2));

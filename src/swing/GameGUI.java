@@ -3,9 +3,7 @@ package swing;
 import game.Board;
 import game.Tile;
 import pieces.Piece;
-import util.PieceKey;
-import util.Team;
-import util.PieceType;
+import util.*;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -13,18 +11,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-public class GameGUI  extends JFrame {
-    private JButton[][] tiles = new JButton[8][8];
-    private JPanel board;
-    private Board game = new Board();
+public class GameGUI extends JFrame{
+    private SwTile[][] tiles = new SwTile[8][8];
+    private GameState state = GameState.NotStarted;
+    private Pos from, to;
+    private Board board;
+    private JLabel fen;
     private static final String COLS = "ABCDEFGH";
     private final HashMap<PieceKey, ImageIcon> icons = new HashMap<>();
 
     public GameGUI(){
-        this.setLayout(new BorderLayout(3, 3));
+
+        this.setLayout(new BorderLayout(4, 3));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800,800);
 
@@ -34,15 +37,19 @@ public class GameGUI  extends JFrame {
         Action newGameAction = new AbstractAction("Új játék") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game = new Board();
+                board = new Board();
+                setupBoard(board);
+               // state = GameState.Playing;
             }
         };
 
         Action newGameFen = new AbstractAction("FEN megadása") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*String fen = JOptionPane.showInputDialog("Adja meg a FEN-t");
-                game = new Board(fen);*/
+                String fen = JOptionPane.showInputDialog("Adja meg a FEN-t");
+                board = new Board(fen);
+                setupBoard(board);
+               // state = GameState.Playing;
             }
         };
 
@@ -50,15 +57,27 @@ public class GameGUI  extends JFrame {
         toolbar.add(newGameFen);
         toolbar.add(new JSeparator());
 
+        Color bg = new Color(185, 220, 199);
 
-        board = new JPanel(new GridLayout(0, 9));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(bg);
+
+        panel.add(new JLabel("FEN -> "), BorderLayout.LINE_START);
+        fen = new JLabel("");
+        panel.add(fen, BorderLayout.CENTER);
+
+        this.add(panel, BorderLayout.PAGE_END);
+
+
+        JPanel board = new JPanel(new GridLayout(0, 9));
 
         board.setBorder(new CompoundBorder(
                 new EmptyBorder(8,8,8,8),
-                new LineBorder(Color.DARK_GRAY)
+                new LineBorder(Color.BLACK)
         ));
 
-        Color bg = new Color(185, 220, 199);
+
         board.setBackground(bg);
         JPanel boardConstraint = new JPanel(new GridLayout());
         boardConstraint.setBackground(bg);
@@ -66,25 +85,25 @@ public class GameGUI  extends JFrame {
         this.add(boardConstraint);
 
 
-        Insets buttonMargin = new Insets(0,0,0,0);
+
         for(int row = 7; row >= 0; row--){
             for(int column = 0; column <= 7; column++){
-                JButton b = new JButton();
-                b.setMargin(buttonMargin);
-                ImageIcon icon = new ImageIcon(
-                        new BufferedImage(100,100,BufferedImage.TYPE_INT_ARGB)
-                );
-                b.setIcon(icon);
+                SwTile t = new SwTile();
                 if((column % 2 == 1 && row % 2 == 0) || (column % 2 == 0 && row % 2 == 1))
-                    b.setBackground(Color.WHITE);
+                    t.setBackground(Color.WHITE);
                 else
-                    b.setBackground(new Color(53,155,95));
-                tiles[row][column] = b;
+                    t.setBackground(new Color(53,155,95));
+
+                t.addMouseListener(new ChessListener());
+                t.setPos(new Pos(column, row));
+
+                tiles[row][column] = t;
             }
         }
 
+        // sorok számozva
         for (int row = 7; row >= 0; row--) {
-            for (int column = 0; column < 8; column++) {
+            for (int column = 0; column <= 7; column++) {
                 if (column == 0) {
                     board.add(new JLabel("" + (row + 1), SwingConstants.CENTER));
                 }
@@ -92,31 +111,37 @@ public class GameGUI  extends JFrame {
             }
         }
 
+        // sarok
         board.add(new JLabel(""));
 
-        for (int i = 0; i < 8; i++) {
-            board.add(
-                    new JLabel(COLS.substring(i, i + 1),
-                            SwingConstants.CENTER));
+        // betűk
+        for (int i = 0; i <= 7; i++) {
+            board.add(new JLabel(COLS.substring(i, i + 1), SwingConstants.CENTER));
         }
-
 
         initImages();
 
-        Tile[][] fenTiles = game.getFen().getTiles();
+        this.setVisible(true);
+        this.setResizable(true);
+        this.setTitle("ToldiSakk");
+
+
+    }
+
+    private void setupBoard(Board board){
+        Tile[][] fenTiles = board.getFen().getTiles();
         for(int row = 7; row >= 0; row--){
             for(int column = 0; column <= 7; column++){
                 Piece piece = fenTiles[row][column].getPiece();
                 if(piece != null) {
                     ImageIcon ic = icons.get(new PieceKey(piece.getType(), piece.getColor()));
-                    tiles[row][column].setIcon(new ImageIcon(imageScale(100, ic.getImage())));
+                    tiles[row][column].setIcon(new ImageIcon(imageScale(this.getHeight()/10, ic.getImage())));
                 }
+                else
+                    tiles[row][column].setIcon(new ImageIcon());
             }
         }
-
-        this.setVisible(true);
-        this.setResizable(true);
-        this.setTitle("ToldiSakk");
+        fen.setText(board.getFen().toString());
     }
 
     private Image imageScale(int s, Image scrImage){
@@ -148,7 +173,61 @@ public class GameGUI  extends JFrame {
 
     }
 
+    private class ChessListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            SwTile theTile = (SwTile) e.getComponent();
+
+            if(board != null) {
+                if (from == null) {
+                    from = theTile.getPos();
+                    if (board.getFen().getPiece(from) == null)
+                        from = null;
+                    else if(board.getFen().getPlayer() != board.getFen().getPiece(from).getColor())
+                        from = null;
+                    else
+                        System.out.println("from: " + from.X() + " " + from.Y());
+                } else {
+                    to = theTile.getPos();
+                    System.out.println("to: " + to.X() + " " + to.Y());
+                    if (board.validMove(from, to)) {
+                        board.executeMove(from, to, board.castling(from, to));
+                        setupBoard(board);
+                    } else {
+                        System.out.println("bad move");
+                    }
+
+                    to = null;
+                    from = null;
+                }
+            }
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if(board != null)
+                setupBoard(board);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+    }
+
     public static void main(String[] args){
-        GameGUI asd = new GameGUI();
+        GameGUI game = new GameGUI();
     }
 }
