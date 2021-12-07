@@ -1,5 +1,7 @@
 package util;
 
-public enum Team {
+import java.io.Serializable;
+
+public enum Team implements Serializable {
 	white, black
 }

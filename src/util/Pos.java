@@ -1,6 +1,8 @@
 package util;
 
-public class Pos{
+import java.io.Serializable;
+
+public class Pos implements Serializable {
 	private final int x;
 	private final int y;
 	

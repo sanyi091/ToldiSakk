@@ -3,8 +3,10 @@ import util.Team;
 import util.Pos;
 import pieces.*;
 
+import java.io.Serializable;
 
-public class Fen {
+
+public class Fen implements Serializable {
 	private Tile[][] tiles = new Tile[8][8];
 	private Team player;
 	private boolean[] castling = {false, false, false, false};

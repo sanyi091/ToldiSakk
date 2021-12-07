@@ -1,6 +1,7 @@
 package swing;
 
 import game.Board;
+import game.Fen;
 import game.Tile;
 import pieces.Piece;
 import util.*;
@@ -18,7 +19,8 @@ import java.awt.image.BufferedImage;
 
 import java.util.HashMap;
 
-public class GameGUI extends JFrame{
+public class GameGUI extends JPanel{
+    private State state = State.MENU;
     private SwTile[][] tiles = new SwTile[8][8];
     private Pos from, to;
     private Board board;
@@ -26,11 +28,11 @@ public class GameGUI extends JFrame{
     private JLabel text;
     private static final String columns = "ABCDEFGH";
     private final HashMap<PieceKey, ImageIcon> icons = new HashMap<>();
+    private Logger log;
 
     public GameGUI(){
 
         this.setLayout(new BorderLayout(4, 3));
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(800,800);
 
         JToolBar toolbar = new JToolBar();
@@ -40,6 +42,8 @@ public class GameGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 board = new Board();
+                log = new Logger();
+                log.put(new Fen(board.getFen().toString()));
                 setupBoard(board);
             }
         };
@@ -49,19 +53,42 @@ public class GameGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String fen = JOptionPane.showInputDialog("Give staring VALID FEN (BETA)");
                 board = new Board(fen);
+                log = new Logger();
+                log.put(new Fen(board.getFen().toString()));
                 setupBoard(board);
+            }
+        };
+
+        Action revert = new AbstractAction("Revert last move") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.drop();
+                if(log.getLast() != null) {
+                    board = new Board(log.getLast().toString());
+                    setupBoard(board);
+                }
+            }
+        };
+
+        Action save = new AbstractAction("Save") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(board != null)
+                    log.save(JOptionPane.showInputDialog("Save as (if not, generated name):"));
             }
         };
 
         Action backToMenu = new AbstractAction("Back to Menu") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                state = State.MENU;
             }
         };
 
         toolbar.add(newGameAction);
         toolbar.add(newGameFen);
+        toolbar.add(revert);
+        toolbar.add(save);
         toolbar.add(backToMenu);
         toolbar.add(new JSeparator());
 
@@ -136,8 +163,14 @@ public class GameGUI extends JFrame{
         initImages();
 
         this.setVisible(true);
-        this.setResizable(true);
-        this.setTitle("ToldiSakk");
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public State getState(){
+        return state;
     }
 
     private void setupBoard(Board board){
@@ -224,6 +257,7 @@ public class GameGUI extends JFrame{
                         if (board.validMove(from, to)) {
                             board.executeMove(from, to);
                             setupBoard(board);
+                            log.put(new Fen(board.getFen().toString()));
                             checkmate();
                         }
                         tiles[from.Y()][from.X()].setBorder(BorderFactory.createEmptyBorder());
@@ -257,16 +291,17 @@ public class GameGUI extends JFrame{
 
     private void checkmate(){
         Team color = board.getFen().getPlayer();
-        if(board.isMate())
+        if(board.isMate()) {
             text.setText("Mate");
-        else if(board.isStalemate())
+            log.configEnd(0);
+        }
+        else if(board.isStalemate()) {
             text.setText("Stalemate");
-        else if(board.inCheck(color))
+            log.configEnd(1);
+        }
+        else if(board.inCheck(color)) {
             text.setText("Check");
+        }
         else text.setText("");
-    }
-
-    public static void main(String[] args){
-        GameGUI game = new GameGUI();
     }
 }

@@ -2,7 +2,9 @@ package game;
 import pieces.Piece;
 import util.Pos;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable {
 	private Piece piece;
 	private Pos pos;
 	

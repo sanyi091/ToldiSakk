@@ -5,7 +5,9 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
-public abstract class Piece {
+import java.io.Serializable;
+
+public abstract class Piece implements Serializable {
 	protected Team color;
 	protected PieceType type;
 	
