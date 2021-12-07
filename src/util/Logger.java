@@ -61,7 +61,7 @@ public class Logger implements Serializable{
 
     public void save(String name) {
         try {
-            if(name != null) {
+            if(name != null || !name.equals("")) {
                 path = "saves" +
                         File.separator +
                         name +

@@ -75,8 +75,10 @@ public class Logs extends JPanel {
         }
 
         String[] fens = new String[log.getMoves().size()];
-        for(int i = 1; i <= log.getMoves().size(); i++)
-            fens[i-1] = log.get(i).toString();
+        for(int i = 1; i <= log.getMoves().size(); i++) {
+            fens[i - 1] = log.get(i).toString();
+            System.out.println(fens[i - 1]);
+        }
         String [] cols = new String[2];
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnCount(0);
@@ -84,12 +86,9 @@ public class Logs extends JPanel {
         table = new JTable(model);
         model.fireTableDataChanged();
 
-        scroll.remove(table);
         scroll = new JScrollPane(table);
-        panel2.remove(scroll);
         panel2 = new JPanel();
         panel2.add(scroll);
-        this.remove(panel2);
         this.add(panel2, BorderLayout.CENTER);
     }
 
