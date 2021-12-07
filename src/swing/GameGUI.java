@@ -9,20 +9,22 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
 import java.util.HashMap;
 
 public class GameGUI extends JFrame{
     private SwTile[][] tiles = new SwTile[8][8];
-    private GameState state = GameState.NotStarted;
     private Pos from, to;
     private Board board;
-    private JLabel fen;
-    private static final String COLS = "ABCDEFGH";
+    private JTextField fen;
+    private JLabel text;
+    private static final String columns = "ABCDEFGH";
     private final HashMap<PieceKey, ImageIcon> icons = new HashMap<>();
 
     public GameGUI(){
@@ -34,40 +36,52 @@ public class GameGUI extends JFrame{
         JToolBar toolbar = new JToolBar();
         this.add(toolbar, BorderLayout.PAGE_START);
 
-        Action newGameAction = new AbstractAction("Új játék") {
+        Action newGameAction = new AbstractAction("New Game") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 board = new Board();
                 setupBoard(board);
-               // state = GameState.Playing;
             }
         };
 
-        Action newGameFen = new AbstractAction("FEN megadása") {
+        Action newGameFen = new AbstractAction("Start Game with FEN") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String fen = JOptionPane.showInputDialog("Adja meg a FEN-t");
+                String fen = JOptionPane.showInputDialog("Give staring VALID FEN (BETA)");
                 board = new Board(fen);
                 setupBoard(board);
-               // state = GameState.Playing;
+            }
+        };
+
+        Action backToMenu = new AbstractAction("Back to Menu") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         };
 
         toolbar.add(newGameAction);
         toolbar.add(newGameFen);
+        toolbar.add(backToMenu);
         toolbar.add(new JSeparator());
 
         Color bg = new Color(185, 220, 199);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setBackground(bg);
+        JPanel lent = new JPanel();
+        lent.setLayout(new BorderLayout());
+        lent.setBackground(bg);
 
-        panel.add(new JLabel("FEN -> "), BorderLayout.LINE_START);
-        fen = new JLabel("");
-        panel.add(fen, BorderLayout.CENTER);
+        lent.add(new JLabel("FEN -> "), BorderLayout.LINE_START);
+        fen = new JTextField("");
+        fen.setEditable(false);
+        fen.setBackground(null);
+        fen.setBorder(null);
+        text = new JLabel("");
+        lent.add(fen, BorderLayout.CENTER);
+        lent.add(text, BorderLayout.LINE_END);
 
-        this.add(panel, BorderLayout.PAGE_END);
+
+        this.add(lent, BorderLayout.PAGE_END);
 
 
         JPanel board = new JPanel(new GridLayout(0, 9));
@@ -101,7 +115,7 @@ public class GameGUI extends JFrame{
             }
         }
 
-        // sorok számozva
+        // row nums
         for (int row = 7; row >= 0; row--) {
             for (int column = 0; column <= 7; column++) {
                 if (column == 0) {
@@ -111,12 +125,12 @@ public class GameGUI extends JFrame{
             }
         }
 
-        // sarok
+        // corner
         board.add(new JLabel(""));
 
-        // betűk
+        // columns
         for (int i = 0; i <= 7; i++) {
-            board.add(new JLabel(COLS.substring(i, i + 1), SwingConstants.CENTER));
+            board.add(new JLabel(columns.substring(i, i + 1), SwingConstants.CENTER));
         }
 
         initImages();
@@ -124,12 +138,11 @@ public class GameGUI extends JFrame{
         this.setVisible(true);
         this.setResizable(true);
         this.setTitle("ToldiSakk");
-
-
     }
 
     private void setupBoard(Board board){
         Tile[][] fenTiles = board.getFen().getTiles();
+
         for(int row = 7; row >= 0; row--){
             for(int column = 0; column <= 7; column++){
                 Piece piece = fenTiles[row][column].getPiece();
@@ -140,8 +153,10 @@ public class GameGUI extends JFrame{
                 else
                     tiles[row][column].setIcon(new ImageIcon());
             }
+
         }
         fen.setText(board.getFen().toString());
+
     }
 
     private Image imageScale(int s, Image scrImage){
@@ -186,23 +201,36 @@ public class GameGUI extends JFrame{
                         from = null;
                     else if(board.getFen().getPlayer() != board.getFen().getPiece(from).getColor())
                         from = null;
-                    else
-                        System.out.println("from: " + from.X() + " " + from.Y());
+                    else {
+                        theTile.setBorder(BorderFactory.createCompoundBorder(
+                                BorderFactory.createLoweredBevelBorder(),
+                                BorderFactory.createLineBorder(Color.black)
+                        ));
+                    }
                 } else {
                     to = theTile.getPos();
-                    System.out.println("to: " + to.X() + " " + to.Y());
-                    if (board.validMove(from, to)) {
-                        board.executeMove(from, to, board.castling(from, to));
-                        setupBoard(board);
-                    } else {
-                        System.out.println("bad move");
+                    if(board.getFen().getPiece(to) != null){
+                        if(board.getFen().getPiece(to).getColor() == board.getFen().getPlayer()) {
+                            tiles[from.Y()][from.X()].setBorder(BorderFactory.createEmptyBorder());
+                            from = to;
+                            to = null;
+                            theTile.setBorder(BorderFactory.createCompoundBorder(
+                                    BorderFactory.createLoweredBevelBorder(),
+                                    BorderFactory.createLineBorder(Color.black)
+                            ));
+                        }
                     }
-
-                    to = null;
-                    from = null;
+                    if(to != null) {
+                        if (board.validMove(from, to)) {
+                            board.executeMove(from, to);
+                            setupBoard(board);
+                            checkmate();
+                        }
+                        tiles[from.Y()][from.X()].setBorder(BorderFactory.createEmptyBorder());
+                        from = null;
+                    }
                 }
             }
-
         }
 
         @Override
@@ -225,6 +253,17 @@ public class GameGUI extends JFrame{
         public void mouseExited(MouseEvent e) {
 
         }
+    }
+
+    private void checkmate(){
+        Team color = board.getFen().getPlayer();
+        if(board.isMate())
+            text.setText("Mate");
+        else if(board.isStalemate())
+            text.setText("Stalemate");
+        else if(board.inCheck(color))
+            text.setText("Check");
+        else text.setText("");
     }
 
     public static void main(String[] args){

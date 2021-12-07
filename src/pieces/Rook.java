@@ -17,7 +17,7 @@ public class Rook extends Piece{
 		if(from.X() == to.X()){
 			int tav = to.Y() - from.Y();
 			for(int i = 1; i <= Math.abs(tav) - 1; i++) {
-				if(fen.getPiece(new Pos(from.X(), from.Y() + i * (Math.abs(tav) / tav))) != null)
+				if(fen.getPiece(new Pos(from.X(), from.Y() + i*(Math.abs(tav) / tav))) != null)
 					return false;
 			}
 			return true;
@@ -26,7 +26,7 @@ public class Rook extends Piece{
 		else if(from.Y() == to.Y()){
 			int tav = to.X() - from.X();
 			for(int i = 1; i <= Math.abs(tav) - 1; i++) {
-				if(fen.getPiece(new Pos(from.X() + i * (Math.abs(tav) / tav), from.Y())) != null)
+				if(fen.getPiece(new Pos(from.X() + i*(Math.abs(tav) / tav), from.Y())) != null)
 					return false;
 			}
 			return true;

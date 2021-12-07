@@ -1,10 +1,8 @@
 package game;
 import util.Team;
 import util.Pos;
-import util.PieceType;
 import pieces.*;
 
-import java.util.HashMap;
 
 public class Fen {
 	private Tile[][] tiles = new Tile[8][8];
@@ -14,7 +12,7 @@ public class Fen {
 	private int turn;
 
 	public Fen(String fen) {
-		if (fen.isBlank() || fen.isEmpty())
+		if (fen == null)
 			fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1";
 		String[] input = fen.split(" ");
 		int iter = 0;
@@ -22,45 +20,25 @@ public class Fen {
 			for (int row = 7; row >= 0; row--) {
 				for (int column = 0; column <= 7; column++, iter++) {
 					switch (Character.toLowerCase(input[0].charAt(iter))) {
-						case 'p':
-							tiles[row][column] = new Tile(new Pawn(input[0].charAt(iter) == 'P' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case 'k':
-							tiles[row][column] = new Tile(new King(input[0].charAt(iter) == 'K' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case 'q':
-							tiles[row][column] = new Tile(new Queen(input[0].charAt(iter) == 'Q' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case 'b':
-							tiles[row][column] = new Tile(new Bishop(input[0].charAt(iter) == 'B' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case 'n':
-							tiles[row][column] = new Tile(new Knight(input[0].charAt(iter) == 'N' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case 'r':
-							tiles[row][column] = new Tile(new Rook(input[0].charAt(iter) == 'R' ? Team.white : Team.black),
-									new Pos(column, row));
-							break;
-
-						case '/':
-							column = -1;
-							break;
-
-						default:
+						case 'p' -> tiles[row][column] = new Tile(new Pawn(input[0].charAt(iter) == 'P' ? Team.white : Team.black),
+								new Pos(column, row));
+						case 'k' -> tiles[row][column] = new Tile(new King(input[0].charAt(iter) == 'K' ? Team.white : Team.black),
+								new Pos(column, row));
+						case 'q' -> tiles[row][column] = new Tile(new Queen(input[0].charAt(iter) == 'Q' ? Team.white : Team.black),
+								new Pos(column, row));
+						case 'b' -> tiles[row][column] = new Tile(new Bishop(input[0].charAt(iter) == 'B' ? Team.white : Team.black),
+								new Pos(column, row));
+						case 'n' -> tiles[row][column] = new Tile(new Knight(input[0].charAt(iter) == 'N' ? Team.white : Team.black),
+								new Pos(column, row));
+						case 'r' -> tiles[row][column] = new Tile(new Rook(input[0].charAt(iter) == 'R' ? Team.white : Team.black),
+								new Pos(column, row));
+						case '/' -> column = -1;
+						default -> {
 							for (int i = 0; i <= Character.getNumericValue(input[0].charAt(iter)) - 1; i++, column++) {
 								tiles[row][column] = new Tile(column, row);
-							}                                                                                    //for loop eggyel többet ad hozzá a végén
-							break;
+							}
+							column--; //for loop adds 1 more than needed
+						}
 					}
 				}
 			}
@@ -70,28 +48,18 @@ public class Fen {
 
 		for (int i = 0; i <= input[2].length() - 1; i++) {
 			switch (input[2].charAt(i)) {
-				case 'K':
-					castling[0] = true;
-					break;
-
-				case 'Q':
-					castling[1] = true;
-					break;
-
-				case 'k':
-					castling[2] = true;
-					break;
-
-				default:
-					castling[3] = true;
-					break;
+				case 'K' -> castling[0] = true;
+				case 'Q' -> castling[1] = true;
+				case 'k' -> castling[2] = true;
+				case 'q' -> castling[3] = true;
 			}
 		}
 
 		if (input[3].charAt(0) == '-') {
 			enpassan = new Pos();
 		} else {
-			enpassan = new Pos((int) input[3].charAt(0) - 41, input[3].charAt(1));
+			enpassan = new Pos(((int)Character.toLowerCase(input[3].charAt(0)) - (int)'a'),
+					Character.getNumericValue(input[3].charAt(1)) - 1);
 		}
 
 		turn = Character.getNumericValue(input[4].charAt(0));
@@ -101,14 +69,14 @@ public class Fen {
 
 		StringBuilder str = new StringBuilder();
 		for (int row = 7; row >= 0; row--) {
-			int sorfiller = 0;
+			int rowfiller = 0;
 			for (int column = 0; column <= 7; column++) {
 				if (tiles[row][column].getPiece() == null) {
-					sorfiller++;
+					rowfiller++;
 				} else {
-					if(sorfiller != 0) {
-						str.append(sorfiller);
-						sorfiller = 0;
+					if(rowfiller != 0) {
+						str.append(rowfiller);
+						rowfiller = 0;
 					}
 					switch (tiles[row][column].getPiece().getType()) {
 						case pawn -> str.append(tiles[row][column].getPiece().getColor() == Team.white ? 'P' : 'p');
@@ -120,14 +88,16 @@ public class Fen {
 					}
 				}
 				if(column == 7 && row != 0) {
-					if(sorfiller != 0) {
-						str.append(sorfiller);
-						sorfiller = 0;
+					if(rowfiller != 0) {
+						str.append(rowfiller);
+						rowfiller = 0;
 					}
 					str.append('/');
 				}
 			}
 		}
+		if(str.charAt(str.length() - 1) == '/')
+			str.deleteCharAt(str.length() - 1);
 
 		str.append(" ");
 		str.append(player == Team.white? 'w':'b');
@@ -141,11 +111,13 @@ public class Fen {
 			str.append('k');
 		if(castling[3])
 			str.append('q');
+		if(!castling[0] && !castling[1] && !castling[2] && !castling[3])
+			str.append('-');
 
 		str.append(" ");
 		if(enpassan.X() != -1) {
-			str.append((char) (enpassan.X() + 41));
-			str.append(enpassan.Y());
+			str.append((char) (enpassan.X() + (int)'a'));
+			str.append((enpassan.Y() + 1));
 		}
 		else
 			str.append("-");

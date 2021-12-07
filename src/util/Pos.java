@@ -1,8 +1,8 @@
 package util;
 
 public class Pos{
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
 	
 	public Pos() {
 		x = -1;

@@ -17,6 +17,4 @@ public class Queen extends Piece{
 		return new Rook(color).validMove(from, to, fen) || new Bishop(color).validMove(from, to, fen);
 	}
 
-
-
 }
