@@ -5,7 +5,10 @@ import pieces.*;
 
 import java.io.Serializable;
 
-
+/**
+ * Fen class used to store the state of the board at any given moment.
+ * Serializable because of io storage.
+ */
 public class Fen implements Serializable {
 	private Tile[][] tiles = new Tile[8][8];
 	private Team player;
@@ -13,6 +16,10 @@ public class Fen implements Serializable {
 	private Pos enpassan;
 	private int turn;
 
+	/**
+	 * Creates a custom fen from a string.
+	 * @param fen The string of the fen.
+	 */
 	public Fen(String fen) {
 		if (fen == null)
 			fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1";
@@ -67,6 +74,10 @@ public class Fen implements Serializable {
 		turn = Character.getNumericValue(input[4].charAt(0));
 	}
 
+	/**
+	 * Transforms the object into a readable fen.
+	 * @return The object in String format.
+	 */
 	public String toString() {
 
 		StringBuilder str = new StringBuilder();
@@ -130,50 +141,101 @@ public class Fen implements Serializable {
 		return str.toString();
 	}
 
+	/**
+	 * Return a given piece or null from a given position.
+	 * @param pos The position.
+	 * @return The piece at that position.
+	 */
 	public Piece getPiece(Pos pos) {
 		return tiles[pos.Y()][pos.X()].getPiece();
 	}
 
+	/**
+	 * Returns a 8x8 array of tiles.
+	 * @return The array of tiles.
+	 */
 	public Tile[][] getTiles() {
 		return tiles;
 	}
 
+	/**
+	 * Returns a tile at a given position.
+	 * @param pos The given position.
+	 * @return The tile at the position.
+	 */
 	public Tile getTile(Pos pos) {
 		return tiles[pos.Y()][pos.X()];
 	}
 
+	/**
+	 * Sets a tile into its position in the array.
+	 * @param tile The tile.
+	 */
 	public void setTile(Tile tile){
 		tiles[tile.getPos().Y()][tile.getPos().X()] = tile;
 	}
 
+	/**
+	 * Return the player currently on the move.
+	 * @return The current player.
+	 */
 	public Team getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Increments the turns by 1.
+	 */
 	public void addTurn(){
 		turn++;
 	}
 
+	/**
+	 * Sets the current player to a new one.
+	 * @param player New players color.
+	 */
 	public void setPlayer(Team player) {
 		this.player = player;
 	}
 
+	/**
+	 * Return the EnPassan position on the board.
+	 * @return EnPassan position.
+	 */
 	public Pos getEnpassan() {
 		return enpassan;
 	}
 
+	/**
+	 * Sets a new EnPassan position.
+	 * @param enpassan The new position.
+	 */
 	public void setEnpassan(Pos enpassan) {
 		this.enpassan = enpassan;
 	}
 
+	/**
+	 * Sets the castling currently available.
+	 * @param inx 0-WKingside, 1-WQueenside, 2-BKingside, 3-BQueenside.
+	 * @param value New value of the given index.
+	 */
 	public void setCastling(int inx, boolean value) {
 		castling[inx] = value;
 	}
 
+	/**
+	 * Returns the castling availability at the current index.
+	 * @param inx 0-WKingside, 1-WQueenside, 2-BKingside, 3-BQueenside.
+	 * @return True if its available.
+	 */
 	public boolean getCastlingAt(int inx){
 		return castling[inx];
 	}
 
+	/**
+	 * Returns the array of castling booleans.
+	 * @return Castling booleans.
+	 */
 	public boolean[] getCastling() {
 		return castling;
 	}

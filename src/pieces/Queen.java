@@ -5,6 +5,9 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
+/**
+ * Classic chess Queen.
+ */
 public class Queen extends Piece{
 
 	public Queen(Team color) {

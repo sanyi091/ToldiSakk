@@ -5,6 +5,10 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
+
+/**
+ * Classic chess Bishop.
+ */
 public class Bishop extends Piece{
 
 	public Bishop(Team color) {

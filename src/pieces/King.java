@@ -5,6 +5,9 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
+/**
+ * Classic chess King.
+ */
 public class King extends Piece{
 
 	public King(Team color) {

@@ -2,6 +2,11 @@ package util;
 
 import java.io.Serializable;
 
+/**
+ * Stores a position, x and y values.
+ * Has equals and hashCode functions.
+ * Serializable because of io storage.
+ */
 public class Pos implements Serializable {
 	private final int x;
 	private final int y;

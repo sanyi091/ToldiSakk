@@ -4,6 +4,9 @@ import util.Pos;
 
 import javax.swing.*;
 
+/**
+ * Class that extends JButton with the little extra of storing simple coordinates.
+ */
 public class SwTile extends JButton {
     private Pos pos;
 

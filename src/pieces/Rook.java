@@ -5,6 +5,9 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
+/**
+ * Classic chess Rook.
+ */
 public class Rook extends Piece{
 
 	public Rook(Team color) {

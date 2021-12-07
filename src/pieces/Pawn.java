@@ -6,6 +6,9 @@ import util.Team;
 import util.Pos;
 import util.PieceType;
 
+/**
+ * Classic chess Pawn.
+ */
 public class Pawn extends Piece {
 
 	public Pawn(Team color) {

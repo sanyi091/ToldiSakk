@@ -2,6 +2,9 @@ package util;
 
 import java.util.Comparator;
 
+/**
+ * Comparator interface class for sorting Loggers.
+ */
 public class LogComparator implements Comparator {
     @Override
     public int compare(Object o1, Object o2) {

@@ -19,6 +19,9 @@ import java.awt.image.BufferedImage;
 
 import java.util.HashMap;
 
+/**
+ * The Graphical interface of the chessboard.
+ */
 public class GameGUI extends JPanel{
     private State state = State.MENU;
     private SwTile[][] tiles = new SwTile[8][8];
@@ -30,6 +33,9 @@ public class GameGUI extends JPanel{
     private final HashMap<PieceKey, ImageIcon> icons = new HashMap<>();
     private Logger log;
 
+    /**
+     * Constructs the JPanel with a 9x9 grid and a toolbar.
+     */
     public GameGUI(){
 
         this.setLayout(new BorderLayout(4, 3));
@@ -165,14 +171,26 @@ public class GameGUI extends JPanel{
         this.setVisible(true);
     }
 
+    /**
+     * Sets the state of the game, GAME if currently playing else MENU
+     * @param state Settable state.
+     */
     public void setState(State state) {
         this.state = state;
     }
 
+    /**
+     * Gets the current state of the gui.
+     * @return The current State.
+     */
     public State getState(){
         return state;
     }
 
+    /**
+     * Sets up the board with the images of the pieces and positions.
+     * @param board The board with the updated states.
+     */
     private void setupBoard(Board board){
         Tile[][] fenTiles = board.getFen().getTiles();
 
@@ -192,6 +210,12 @@ public class GameGUI extends JPanel{
 
     }
 
+    /**
+     * Scales an image to s specified w*h;
+     * @param s The with and the hight.
+     * @param scrImage The image.
+     * @return The scaled image.
+     */
     private Image imageScale(int s, Image scrImage){
         BufferedImage resImage = new BufferedImage(s, s, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resImage.createGraphics();
@@ -203,6 +227,9 @@ public class GameGUI extends JPanel{
         return resImage;
     }
 
+    /**
+     * Initialises the images into a HashMap, so the setupboard function can easily find where they are.
+     */
     private void initImages(){
 
         icons.put(new PieceKey(PieceType.pawn, Team.white), new ImageIcon("pieces/wpawn.png"));
@@ -221,6 +248,9 @@ public class GameGUI extends JPanel{
 
     }
 
+    /**
+     * Custom MouseListener which makes it possible to move the pieces.
+     */
     private class ChessListener implements MouseListener {
 
         @Override
@@ -289,6 +319,9 @@ public class GameGUI extends JPanel{
         }
     }
 
+    /**
+     * Checks if the move moved the board into a Check, a Mate or a Stalemate.
+     */
     private void checkmate(){
         Team color = board.getFen().getPlayer();
         if(board.isMate()) {

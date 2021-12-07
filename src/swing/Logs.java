@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
+/**
+ * The logs window which contains the saved games.
+ */
 public class Logs extends JPanel {
     private State state = State.MENU;
     private JComboBox games;
@@ -24,6 +27,9 @@ public class Logs extends JPanel {
     private JTable table = new JTable();
     private JScrollPane scroll = new JScrollPane(table);
 
+    /**
+     * Constructs the JPanel.
+     */
     public Logs(){
         initNames();
         initComboBox();
@@ -40,6 +46,9 @@ public class Logs extends JPanel {
         this.setVisible(true);
     }
 
+    /**
+     * Initialises the JComboBox.
+     */
     private void initComboBox(){
         JButton backToMenu = new JButton("Back to Menu");
         backToMenu.addActionListener(e -> state = State.MENU);
@@ -65,6 +74,10 @@ public class Logs extends JPanel {
         panel.add(checkSave);
     }
 
+    /**
+     * Initialises the Table which shows the states of a game.
+     * @param name the path of the chosen file.
+     */
     private void initTable(String name){
         Logger log = new Logger();
         for (int i = 0; i <= logs.size() - 1; i++) {
@@ -92,6 +105,9 @@ public class Logs extends JPanel {
         this.add(panel2, BorderLayout.CENTER);
     }
 
+    /**
+     * Reads the saved games into an ArrrayList.
+     */
     public void initNames(){
         File f = new File("saves" + File.separator);
         FilenameFilter filter = (dir, name) -> name.endsWith(".txt");
@@ -104,10 +120,18 @@ public class Logs extends JPanel {
         Collections.sort(logs, new LogComparator());
     }
 
+    /**
+     * Sets the state of the window, if running LOG, else MENU.
+     * @param state The wanted state.
+     */
     public void setState(State state) {
         this.state = state;
     }
 
+    /**
+     * Return the current state.
+     * @return The current state.
+     */
     public State getState(){
         return state;
     }

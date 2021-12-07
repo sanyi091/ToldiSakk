@@ -7,6 +7,9 @@ import util.PieceType;
 
 import java.util.ArrayList;
 
+/**
+ * Classic chess Knight.
+ */
 public class Knight extends Piece{
 
 	public Knight(Team color) {

@@ -1,30 +1,62 @@
 package game;
 
 import pieces.King;
+import pieces.Queen;
 import pieces.Rook;
 import util.PieceType;
 import util.Team;
 import util.Pos;
 
+/**
+ *  Board class, used in executing and checking of the moves.
+ *  Also checks the Mate and Stalemate states.
+ */
 public class Board {
 	private Fen fen;
 
+	/**
+	 * Default Board Constructor.
+	 * Creates a Board with the standard chess setup.
+	 */
 	public Board() {
 		fen = new Fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 1");
 	}
 
+	/**
+	 * Custom String Board Constructor.
+	 * Creates a Board with the given FEN
+	 * @param fen The fen which will be the state of the board, in String format.
+	 */
 	public Board(String fen){
 		this.fen = new Fen(fen);
 	}
 
+	/**
+	 * Board copy constructor.
+	 * @param b The copyable board.
+	 */
 	public Board(Board b){
 		this.fen = new Fen(b.getFen().toString());
 	}
 
+	/**
+	 * Move validator with the default option of checking for castling and the moving player being the one currently moving.
+	 * @param from From position.
+	 * @param to To position.
+	 * @return True if the move is valid.
+	 */
 	public boolean validMove(Pos from, Pos to){
 		return validMove(from, to, true, fen.getPlayer());
 	}
 
+	/**
+	 * Customisable move validator.
+	 * @param from From position.
+	 * @param to To position.
+	 * @param checkcheck If true, will check not to move into checks.
+	 * @param asTeam Color of the moving pieces.
+	 * @return True if move is valid.
+	 */
 	public boolean validMove(Pos from, Pos to, boolean checkcheck, Team asTeam){
 		if(fen.getPiece(from) == null)
 			return false;
@@ -56,6 +88,13 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * Returns which castling move a player is performing, and it's validity.
+	 * @param from From position.
+	 * @param to To Position.
+	 * @return 0 - White Kingside, 1 - White Queenside, 2 - Black Kingside, 3 - Black Queenside, -1 - None.
+	 *
+	 */
 	public int castling(Pos from, Pos to){
 		if(fen.getPiece(from) == null)
 			return -1;
@@ -96,6 +135,11 @@ public class Board {
 		return -1;
 	}
 
+	/**
+	 * Executes a move, updating the fen in the process.
+	 * @param from From position.
+	 * @param to To position.
+	 */
 	public void executeMove(Pos from, Pos to){
 		if(fen.getPiece(from) == null)
 			return;
@@ -151,6 +195,9 @@ public class Board {
 			else
 				fen.setEnpassan(new Pos());
 
+			if(fen.getPiece(from).getType() == PieceType.pawn && to.Y() == (fen.getPlayer() == Team.white? 7:0))
+				fen.setTile(new Tile(new Queen(fen.getPlayer()), from));
+
 			fen.setTile(new Tile(fen.getPiece(from), to));
 			fen.setTile(new Tile(from));
 		}
@@ -159,6 +206,11 @@ public class Board {
 		fen.addTurn();
 	}
 
+	/**
+	 * Checks if there is a Check on the board for a given player.
+	 * @param color The players color which will be checked.
+	 * @return True if in check.
+	 */
 	public boolean inCheck(Team color){
 		Pos king = null;
 		for(int sor = 0; sor <= 7; sor++){
@@ -185,6 +237,10 @@ public class Board {
 		return false;
 	}
 
+	/**
+	 * Checks if a stalemate has occurred.
+	 * @return True if it has.
+	 */
 	public boolean isStalemate(){
 		for(int frow = 0; frow <= 7; frow++){
 			for(int fcolumn = 0; fcolumn <= 7; fcolumn++){
@@ -200,6 +256,10 @@ public class Board {
 		return true;
 	}
 
+	/**
+	 * Checks if a mate has occurred for the current player.
+	 * @return True if it has.
+	 */
 	public boolean isMate(){
 		if(inCheck(fen.getPlayer()))
 			return isStalemate();
@@ -207,6 +267,10 @@ public class Board {
 			return false;
 	}
 
+	/**
+	 * Returns the board's fen.
+	 * @return The fen of the Board.
+	 */
 	public Fen getFen(){
 		return fen;
 	}

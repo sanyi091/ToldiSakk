@@ -5,6 +5,10 @@ import util.State;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Simple menu with 2 buttons and a title.
+ * Runnable so we can navigate back from the submenus.
+ */
 public class MainMenu extends JFrame implements Runnable{
 
     private final JPanel cont;
@@ -14,6 +18,9 @@ public class MainMenu extends JFrame implements Runnable{
     private GameGUI gui;
     private Logs logs;
 
+    /**
+     * Constructs the window.
+     */
     public MainMenu(){
         initBanner();
         initButtons();
@@ -42,6 +49,10 @@ public class MainMenu extends JFrame implements Runnable{
         this.setVisible(true);
         this.setTitle("ToldiChess");
     }
+
+    /**
+     * Initiates the banner.
+     */
     private void initBanner(){
         JLabel banner = new JLabel();
         banner.setIcon(new ImageIcon("pieces/menu.png"));
@@ -50,6 +61,9 @@ public class MainMenu extends JFrame implements Runnable{
 
     }
 
+    /**
+     * Initiates the buttons.
+     */
     private void initButtons(){
         JButton newGame = new JButton("New Game");
         newGame.addActionListener(e -> {
@@ -82,6 +96,9 @@ public class MainMenu extends JFrame implements Runnable{
 
     }
 
+    /**
+     * Runnable interface implementation, simply checks which state the application is, and shown the appropriate window.
+     */
     @Override
     public void run() {
         try {

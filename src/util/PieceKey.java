@@ -1,5 +1,9 @@
 package util;
 
+/**
+ * Stores a type and a color, giving a unique identifier to a piece.
+ * Has equals and hashCode functions.
+ */
 public class PieceKey {
     PieceType type;
     Team color;
