@@ -112,12 +112,13 @@ public class Logs extends JPanel {
         File f = new File("saves" + File.separator);
         FilenameFilter filter = (dir, name) -> name.endsWith(".txt");
         files = f.list(filter);
-        assert files != null;
-        for (String path: files) {
-            logs.add(new Logger("saves" + File.separator + path));
-        }
+        if(files != null) {
+        	for (String path: files) {
+        		logs.add(new Logger("saves" + File.separator + path));
+        	}
 
-        Collections.sort(logs, new LogComparator());
+        	Collections.sort(logs, new LogComparator());
+        }
     }
 
     /**
